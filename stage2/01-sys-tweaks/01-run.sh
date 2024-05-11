@@ -4,8 +4,6 @@ install -m 755 files/resize2fs_once	"${ROOTFS_DIR}/etc/init.d/"
 
 install -m 644 files/50raspi		"${ROOTFS_DIR}/etc/apt/apt.conf.d/"
 
-install -m 644 files/console-setup   	"${ROOTFS_DIR}/etc/default/"
-
 install -m 755 files/rc.local		"${ROOTFS_DIR}/etc/"
 
 if [ -n "${PUBKEY_SSH_FIRST_USER}" ]; then
@@ -22,8 +20,6 @@ fi
 
 on_chroot << EOF
 systemctl disable hwclock.sh
-systemctl disable nfs-common
-systemctl disable rpcbind
 if [ "${ENABLE_SSH}" == "1" ]; then
 	systemctl enable ssh
 else
@@ -46,10 +42,7 @@ EOF
 fi
 
 on_chroot <<EOF
-for GRP in input spi i2c gpio; do
-	groupadd -f -r "\$GRP"
-done
-for GRP in adm dialout cdrom audio users sudo video games plugdev input gpio spi i2c netdev render; do
+for GRP in adm dialout cdrom audio sudo video plugdev; do
   adduser $FIRST_USER_NAME \$GRP
 done
 EOF
@@ -57,10 +50,6 @@ EOF
 if [ -f "${ROOTFS_DIR}/etc/sudoers.d/010_pi-nopasswd" ]; then
   sed -i "s/^pi /$FIRST_USER_NAME /" "${ROOTFS_DIR}/etc/sudoers.d/010_pi-nopasswd"
 fi
-
-on_chroot << EOF
-setupcon --force --save-only -v
-EOF
 
 on_chroot << EOF
 usermod --pass='*' root
