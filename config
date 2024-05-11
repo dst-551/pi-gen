@@ -1,0 +1,8 @@
+IMG_NAME="raspios-ultra"
+PI_GEN_REPO="https://github.com/dst-551/pi-gen.git"
+PI_GEN_RELEASE="Raspberry Pi ultralight"
+DEPLOY_COMPRESSION="xz"
+LOCALE_DEFAULT="en_US.UTF-8"
+TIMEZONE_DEFAULT="Etc/UTC"
+SETFCAP="1"
+STAGE_LIST="stage0 stage1 stage2"
